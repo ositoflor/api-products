@@ -1,5 +1,6 @@
 package com.api.product.domain;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 
 import java.util.UUID;
@@ -10,6 +11,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     @Column(name = "description")
+    @NotBlank
     private String description;
     @Column(name = "value")
     private float value;
