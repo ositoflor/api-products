@@ -1,6 +1,5 @@
-package com.api.product.services.execotionhandler;
+package com.api.product.services.exceptionhandler;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 
 public class MessageExceptionHandler {

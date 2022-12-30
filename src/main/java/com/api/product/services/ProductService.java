@@ -2,7 +2,7 @@ package com.api.product.services;
 
 import com.api.product.domain.Product;
 import com.api.product.repositories.ProductRepository;
-import com.api.product.services.execotionhandler.ProductNotFoundException;
+import com.api.product.services.exceptionhandler.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

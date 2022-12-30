@@ -1,4 +1,4 @@
-package com.api.product.services.execotionhandler;
+package com.api.product.services.exceptionhandler;
 
 public class ProductNotFoundException extends RuntimeException {
 }
