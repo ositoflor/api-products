@@ -3,15 +3,15 @@ package com.api.product.controllers;
 import com.api.product.domain.Product;
 import com.api.product.services.ProductService;
 import com.api.product.services.exceptionhandler.MessageExceptionHandler;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,6 +24,10 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Object> saveProduct(@RequestBody @Valid Product product){
+        if (product.getValue() <= 0) {
+            MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Valor do produto não pode ser menor ou igual a 0");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(product));
         } catch (Error e) {
@@ -42,8 +46,13 @@ public class ProductController {
     }
 
     @GetMapping("/description/{description}")
-    public ResponseEntity<List<Product>> getProductForDescription(@PathVariable(value = "description")String description) {
-        return ResponseEntity.status(HttpStatus.OK).body(productService.getDescriptionForProduct(description));
+    public ResponseEntity<Page<Product>> getProductForDescription(@PathVariable(value = "description")String description, Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getDescriptionForProduct(description, pageable));
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<Page<Product>> getProductForCategory(@PathVariable(value = "category")String category, Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getCategoryForProduct(category, pageable));
     }
 
     @DeleteMapping("/{id}")
@@ -56,6 +65,24 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> upDateProduct(@PathVariable(value = "id")UUID id,
                                                 @RequestBody @Valid Product product) {
+        if (product.getValue() <= 0) {
+            MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Valor do produto não pode ser menor ou igual a 0");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+        Product productRepository = productService.findById(id);
+        productRepository.setAmount(product.getAmount());
+        productRepository.setValue(product.getValue());
+        productRepository.setDescription(product.getDescription());
+        return ResponseEntity.status(HttpStatus.OK).body(productService.save(productRepository));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> upDatePatchProduct(@PathVariable(value = "id")UUID id,
+                                                @RequestBody @Valid Product product) {
+        if (product.getValue() <= 0) {
+            MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Valor do produto não pode ser menor ou igual a 0");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
         Product productRepository = productService.findById(id);
         productRepository.setAmount(product.getAmount());
         productRepository.setValue(product.getValue());

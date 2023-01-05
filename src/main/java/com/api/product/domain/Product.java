@@ -1,8 +1,9 @@
 package com.api.product.domain;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 @Entity
@@ -17,12 +18,16 @@ public class Product {
     private float value;
     @Column(name = "amount")
     private Integer amount;
+    @Column(name = "category")
+    @Valid
+    private Category category;
 
-    public Product(UUID id, String description, float value, Integer amount) {
+    public Product(UUID id, String description, float value, Integer amount, Category category) {
         this.id = id;
         this.description = description;
         this.value = value;
         this.amount = amount;
+        this.category = category;
     }
 
     public Product(){}
@@ -56,4 +61,8 @@ public class Product {
     public void setAmount(Integer amount) {
         this.amount = amount;
     }
+
+    public Category getCategory() {return category;}
+
+    public void setCategory(Category category) {this.category = category;}
 }

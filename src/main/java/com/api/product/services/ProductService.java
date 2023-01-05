@@ -8,9 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
 import java.util.Optional;
 import java.util.UUID;
+
 
 @Service
 public class ProductService {
@@ -25,8 +26,11 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
-    public List<Product> getDescriptionForProduct(String description) {
-        return productRepository.findByDescription(description);
+    public Page<Product> getDescriptionForProduct(String description, Pageable pageable) {
+        return productRepository.findByDescription(description, pageable);
+    }
+    public Page<Product> getCategoryForProduct(String description, Pageable pageable) {
+        return productRepository.findByCategory(description, pageable);
     }
     public Product findById(UUID id) {
         Optional<Product> product = productRepository.findById(id);
