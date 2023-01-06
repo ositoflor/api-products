@@ -41,4 +41,8 @@ public class ProductService {
         findById(product.getId());
         productRepository.delete(product);
     }
+
+    public boolean exitsByDescription(String description) {
+        return productRepository.existsByDescription(description);
+    }
 }

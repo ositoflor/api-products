@@ -17,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query(value = "select p from Product p where p.category.name like %?1%")
     Page<Product> findByCategory(String category, Pageable pageable);
+
+    boolean existsByDescription(String description);
 }
