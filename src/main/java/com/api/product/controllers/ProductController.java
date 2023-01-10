@@ -22,14 +22,14 @@ public class ProductController {
     ProductService productService;
 
 
-    @PostMapping
+    @PostMapping(value = "/cadastrar")
     public ResponseEntity<Object> saveProduct(@RequestBody @Valid Product product){
         if (productService.exitsByDescription(product.getDescription())){
             MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Produto já cadastrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
-        if (product.getValue() <= 0 && product.getAmount() <= 0) {
-            MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Valor ou quantidade do produto não pode ser menor ou igual a 0");
+        if (product.getAmount() <= 0 || product.getValue() <= 0) {
+            MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Preço ou quantidade não pode ser 0");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
         try{
