@@ -1,16 +1,21 @@
 package com.api.product.domain;
 
 
-import javax.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.UUID;
 
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GenericGenerator(name="UUIDGenerator", strategy ="uuid2")
+    @GeneratedValue(generator = "UUIDGenerator")
+    private String id;
     @Column(name = "description")
     @NotBlank
     private String description;
@@ -22,7 +27,7 @@ public class Product {
     @Valid
     private Category category;
 
-    public Product(UUID id, String description, float value, Integer amount, Category category) {
+    public Product(String id, String description, float value, Integer amount, Category category) {
         this.id = id;
         this.description = description;
         this.value = value;
@@ -31,11 +36,11 @@ public class Product {
     }
 
     public Product(){}
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
     public String getDescription() {

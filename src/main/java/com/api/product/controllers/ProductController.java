@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/product")
@@ -58,7 +57,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id")UUID id,
+    public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id")String id,
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
         if (!productService.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
@@ -85,7 +84,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") UUID id,
+    public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") String id,
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
         if (!productService.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
@@ -100,7 +99,7 @@ public class ProductController {
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Object> upDateProduct(@PathVariable(value = "id")UUID id,
+    public ResponseEntity<Object> upDateProduct(@PathVariable(value = "id")String id,
                                                 @RequestBody @Valid Product product,
                                                 @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
         if (!productService.validateToken(token)) {
@@ -122,7 +121,7 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> upDatePatchProduct(@PathVariable(value = "id")UUID id,
+    public ResponseEntity<Object> upDatePatchProduct(@PathVariable(value = "id")String id,
                                                 @RequestBody @Valid Product product) {
         if (product.getValue() <= 0 && product.getAmount() <= 0) {
             MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Valor ou quantidade do produto não pode ser menor ou igual a 0");

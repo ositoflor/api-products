@@ -9,9 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Service
@@ -36,7 +34,7 @@ public class ProductService {
     public Page<Product> getCategoryForProduct(String description, Pageable pageable) {
         return productRepository.findByCategory(description, pageable);
     }
-    public Product findById(UUID id) {
+    public Product findById(String id) {
         System.out.print(id);
         Optional<Product> product = productRepository.findById(id);
         return product.orElseThrow(() -> new ProductNotFoundException());
