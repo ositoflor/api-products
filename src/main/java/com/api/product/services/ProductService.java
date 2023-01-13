@@ -2,6 +2,7 @@ package com.api.product.services;
 
 import com.api.product.domain.Product;
 import com.api.product.repositories.ProductRepository;
+import com.api.product.repositories.clients.AuthFeing;
 import com.api.product.services.exceptionhandler.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,9 @@ public class ProductService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    AuthFeing authFeing;
+
     public Product save(Product product) {
         return productRepository.save(product);
     }
@@ -33,6 +37,7 @@ public class ProductService {
         return productRepository.findByCategory(description, pageable);
     }
     public Product findById(UUID id) {
+        System.out.print(id);
         Optional<Product> product = productRepository.findById(id);
         return product.orElseThrow(() -> new ProductNotFoundException());
     }
@@ -44,5 +49,13 @@ public class ProductService {
 
     public boolean exitsByDescription(String description) {
         return productRepository.existsByDescription(description);
+    }
+
+    public boolean validateToken(String token) {
+        return authFeing.validateToken(token);
+    }
+
+    public String getTypeUser(String token) {
+        return authFeing.getTypeUser(token);
     }
 }

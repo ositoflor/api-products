@@ -4,8 +4,8 @@ import com.api.product.domain.Product;
 import com.api.product.services.ProductService;
 import com.api.product.services.exceptionhandler.MessageExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/product")
 public class ProductController {
 
     @Autowired
@@ -23,7 +23,16 @@ public class ProductController {
 
 
     @PostMapping(value = "/cadastrar")
-    public ResponseEntity<Object> saveProduct(@RequestBody @Valid Product product){
+    public ResponseEntity<Object> saveProduct(@RequestBody @Valid Product product,
+                                              @RequestHeader(HttpHeaders.AUTHORIZATION)String token){
+        if (!productService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
+        };
+
+        if (productService.getTypeUser(token).equals("CLIENT")){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Usuário sem permisão" ));
+        }
+
         if (productService.exitsByDescription(product.getDescription())){
             MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Produto já cadastrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
@@ -40,35 +49,67 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllProduct(Pageable pageable) {
+    public ResponseEntity<Object> getAllProduct(Pageable pageable,
+                                                @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
+        if (!productService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
+        };
         return new ResponseEntity<>(productService.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getOneProduct(@PathVariable(value = "id")UUID id) {
+    public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id")UUID id,
+                                                 @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
+        if (!productService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
+        };
         return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping("/description/{description}")
-    public ResponseEntity<Page<Product>> getProductForDescription(@PathVariable(value = "description")String description, Pageable pageable) {
+    public ResponseEntity<Object> getProductForDescription(@PathVariable(value = "description")String description, Pageable pageable,
+                                                                  @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
+        if (!productService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
+        };
         return ResponseEntity.status(HttpStatus.OK).body(productService.getDescriptionForProduct(description, pageable));
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<Page<Product>> getProductForCategory(@PathVariable(value = "category")String category, Pageable pageable) {
+    public ResponseEntity<Object> getProductForCategory(@PathVariable(value = "category")String category, Pageable pageable,
+                                                               @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
+        if (!productService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
+        };
         return ResponseEntity.status(HttpStatus.OK).body(productService.getCategoryForProduct(category, pageable));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") UUID id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") UUID id,
+                                                @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
+        if (!productService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
+        };
+
+        if (productService.getTypeUser(token).equals("CLIENT")){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Usuário sem permisão" ));
+        }
         Product product = productService.findById(id);
         productService.delete(product);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageExceptionHandler(new Date(),HttpStatus.OK.value(),"Usuário deletado com sucesso"));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<Object> upDateProduct(@PathVariable(value = "id")UUID id,
-                                                @RequestBody @Valid Product product) {
+                                                @RequestBody @Valid Product product,
+                                                @RequestHeader(HttpHeaders.AUTHORIZATION)String token) {
+        if (!productService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Token Inválido" ));
+        };
+
+        if (productService.getTypeUser(token).equals("CLIENT")){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageExceptionHandler(new Date(), HttpStatus.UNAUTHORIZED.value(), "Usuário sem permisão" ));
+        }
         if (product.getValue() <= 0 && product.getAmount() <= 0) {
             MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Valor ou quantidade do produto não pode ser menor ou igual a 0");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
