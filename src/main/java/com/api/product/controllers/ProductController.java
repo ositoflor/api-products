@@ -29,7 +29,7 @@ public class ProductController {
         };
 
         if (productService.getTypeUser(token).equals("CLIENT")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageExceptionHandler(new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permisão" ));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageExceptionHandler(new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permissão" ));
         }
 
         if (productService.exitsByDescription(product.getDescription())){
@@ -91,7 +91,7 @@ public class ProductController {
         };
 
         if (productService.getTypeUser(token).equals("CLIENT")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageExceptionHandler(new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permisão" ));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageExceptionHandler(new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permissão" ));
         }
         Product product = productService.findById(id);
         productService.delete(product);
@@ -107,7 +107,7 @@ public class ProductController {
         };
 
         if (productService.getTypeUser(token).equals("CLIENT")){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageExceptionHandler(new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permisão" ));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageExceptionHandler(new Date(), HttpStatus.FORBIDDEN.value(), "Usuário sem permissão" ));
         }
         if (product.getValue() <= 0 && product.getAmount() <= 0) {
             MessageExceptionHandler error = new MessageExceptionHandler(new Date(), HttpStatus.NOT_FOUND.value(), "Valor ou quantidade do produto não pode ser menor ou igual a 0");
