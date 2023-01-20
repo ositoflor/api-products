@@ -2,7 +2,7 @@ package com.api.product.services;
 
 import com.api.product.domain.Product;
 import com.api.product.repositories.ProductRepository;
-import com.api.product.repositories.clients.AuthFeing;
+import com.api.product.repositories.clients.AuthClient;
 import com.api.product.services.exceptionhandler.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,7 @@ public class ProductService {
     ProductRepository productRepository;
 
     @Autowired
-    AuthFeing authFeing;
+    AuthClient authClient;
 
     public Product save(Product product) {
         return productRepository.save(product);
@@ -50,10 +50,10 @@ public class ProductService {
     }
 
     public boolean validateToken(String token) {
-        return authFeing.validateToken(token);
+        return authClient.validToken(token);
     }
 
     public String getTypeUser(String token) {
-        return authFeing.getTypeUser(token);
+        return authClient.getTypeUser(token);
     }
 }
