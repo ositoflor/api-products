@@ -1,7 +1,7 @@
 package com.api.product.controllers;
 
 import com.api.product.domain.Product;
-import com.api.product.services.ProductService;
+import com.api.product.services.impl.ProductServiceImpl;
 import com.api.product.services.exceptionhandler.MessageExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import java.util.Date;
 public class ProductController {
 
     @Autowired
-    ProductService productService;
+    ProductServiceImpl productService;
 
 
     @PostMapping(value = "/cadastrar")
